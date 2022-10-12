@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Pod
+metadata:
+name: configmap-pod
+spec:
+  containers:
+    - name: demo
+      image: postgres:latest
+    
+      env:
+      # Define the environment variable
+      - name: POSTGRESQLDB-USER # Notice that the case is different here
+      # from the key name in the ConfigMap.
+        valueFrom:
+          configMapKeyRef:
+            name: configmap-demo # The ConfigMap this value comes from.
+            key: POSTGRESDB_USER # The key to fetch.
+      - name: POSTGRESQL-DB-ROOT-PASSWORD
+        valueFrom:
+          configMapKeyRef:
+            name: configmap-demo
+            key: POSTGRESDB_ROOT_PASSWORD
+      
+      - name: POSTGRESQLDB-DATABASE-NAME
+        valueFrom:
+          configMapKeyRef:
+            name: configmap-demo
+            key: POSTGRESDB_DATABASE
+
+      - name: POSTGRESQLDB-LOCALPORT
+        valueFrom:
+          configMapKeyRef:
+            name: configmap-demo
+            key: POSTGRESDB_LOCAL_PORT
+
+      - name: POSTGRESQLDB-DOCKERPORT
+        valueFrom:
+          configMapKeyRef:
+            name: configmap-demo
+            key: POSTGRESDB_DOCKER_PORT
+
+      ports:
+      -containerPort: MYSQLDB-DOCKERPORT
+    

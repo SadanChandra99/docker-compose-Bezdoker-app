@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  minReadySeconds: 10
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      volumes:
+        - name: mysql-volume
+          configMap:
+            name: configmap-demo
+      containers:
+      - image: mysql:latest
+        name: mysql
+        env:
+      # Define the environment variable
+        - name: MYSQL-DB-USER # Notice that the case is different here
+      # from the key name in the ConfigMap.
+          valueFrom:
+            configMapKeyRef:
+              name: configmap-demo # The ConfigMap this value comes from.
+              key: MYSQLDB_USER # The key to fetch.
+        - name: MYSQL-DB-ROOT-PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: configmap-demo
+              key: MYSQLDB_ROOT_PASSWORD
+      
+        - name: MYSQL-DB-DATABASE-NAME
+          valueFrom:
+            configMapKeyRef:
+              name: configmap-demo
+              key: MYSQLDB_DATABASE
+
+        - name: MYSQL-DB-LOCALPORT
+          valueFrom:
+            configMapKeyRef:
+              name: configmap-demo
+              key: MYSQLDB_LOCAL_PORT
+
+        - name: MYSQLDB-DOCKERPORT
+          valueFrom:
+            configMapKeyRef:
+              name: configmap-demo
+              key: MYSQLDB_DOCKER_PORT
+
+        ports:
+        - containerPort: 3306
+          name: mysql
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#        volumeMounts:
+ 
+ #       - name: mysql-volume
+  #        mountPath: /etc/mysql/conf.d/custom.my.cnf

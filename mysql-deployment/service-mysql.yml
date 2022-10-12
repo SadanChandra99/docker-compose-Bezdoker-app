@@ -1,0 +1,20 @@
+# declare a service object
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-svc-mysql
+  labels:
+    
+    version: v1.1
+    app: mysql
+# define and configure service to acces 80 port
+spec:
+  type: ClusterIP
+  clusterIP: 10.99.1.1
+  ports:
+  - port: 3306
+    
+    protocol: TCP
+  
+  selector:
+    app: mysql
